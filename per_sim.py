@@ -12,6 +12,7 @@ from mayavi.core.ui.mayavi_scene import MayaviScene
 import version
 import transform
 import poincare
+import input_stage
 
 # phase perturbation on cable
 delta_pt = np.arange( -np.pi, np.pi+0.05, 0.05 )
@@ -33,14 +34,18 @@ def calc(a1,a2,delta=0,theta=0,phi=0):
     return s1,s2,s3
 
 class Visualization(HasTraits):
-    # a2 is fixed
-    a2    = 10.0
-    
     # sliders for adjustable parameters
     # alternative: mode='spinner'
-    a1    = Range(1, 100, 100, label='a1', desc='E_x amplitude (E_y=4.0)', mode='slider')
-    theta = Range(-90, 90,  0, label='theta', desc='Rotation angle', mode='slider')
-    phi   = Range(-90, 90, 0, label='phi', desc='Phase delay', mode='slider')
+    
+    theta_1 = Range(-90, 90, 8, label='I/P theta', desc='Input stage rotation angle', mode='slider')
+    delta   = Range(-90, 90, 4, label='I/P delta', desc='Input stage phase delay', mode='slider')
+    
+    beta    = Range(-90, 90, 12, label='I/P rot', desc='Input stage lin pol rot angle', mode='slider')
+    
+    a1, a2 =  0, 1
+    
+    theta = Range(-90, 90,  0, label='O/P theta', desc='Output stage rotation angle', mode='slider')
+    phi   = Range(-90, 90, 0, label='O/P phi', desc='Output stage phase delay', mode='slider')
     scene = Instance(MlabSceneModel, ())
     
     def __init__(self):
@@ -60,6 +65,10 @@ class Visualization(HasTraits):
         self.scene.mlab.axes(self.pt_source,
                              x_axis_visibility=False, y_axis_visibility=False, z_axis_visibility=False)
         # self.scene.mlab.orientation_axes(xlabel='S1',ylabel='S2',zlabel='S3')
+        xbeta  = self.beta * cvtfactor
+        xdelta = self.delta * cvtfactor
+        xtheta = self.theta_1 * cvtfactor
+        self.a1, self.a2 = input_stage.amplitudes( xbeta, xdelta, xtheta )
         
         x,y,z = calc(self.a1, self.a2, theta=self.theta, phi=self.phi)
         self.plot = self.scene.mlab.plot3d(x, y, z, tube_radius=None, color=poincare.orange)
@@ -72,8 +81,13 @@ class Visualization(HasTraits):
         
         return
         
-    @on_trait_change('a1,theta,phi')
+    @on_trait_change('theta_1,delta,beta,theta,phi')
     def update_plot(self):
+        xbeta  = self.beta * cvtfactor
+        xdelta = self.delta * cvtfactor
+        xtheta = self.theta_1 * cvtfactor
+        self.a1, self.a2 = input_stage.amplitudes( xbeta, xdelta, xtheta )
+        
         x, y, z = calc(self.a1, self.a2, theta=self.theta, phi=self.phi)
         self.plot.mlab_source.set(x=x, y=y, z=z)
         return
@@ -85,9 +99,11 @@ class Visualization(HasTraits):
                      height=350, width=400, resizable=True, show_label=False),
                 VGroup(
                        Item('_'),
-                       Item('a1'),
-                       Item('theta'),
-                       Item('phi') ),
+                       Item('theta_1'), # IP rot angle
+                       Item('delta'),   # IP phase delay
+                       Item('beta'),    # IP linpol orient
+                       Item('theta'),   # OP rot angle
+                       Item('phi') ),   # OP phase
                 title=title,
                 resizable=True,
                 scrollable=True
