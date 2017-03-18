@@ -85,29 +85,37 @@ def land_marks(Xmlab=mlab,figure=None):
     rad = 1.3
     x,y,z = rad, 0, 0
     if figure == None:
-        Xmlab.text3d(x,y,z,'H',scale=0.1)
+        t1 = Xmlab.text3d(x,y,z,'H',scale=0.1)
     else:
-        Xmlab.text3d(x,y,z,'H',scale=0.1, figure=figure)
+        t1 = Xmlab.text3d(x,y,z,'H',scale=0.1, figure=figure)
+    
+    t1.vector_text.update()
     
     x,y,z = -rad,0,0
     if figure == None:
-        Xmlab.text3d(x,y,z,'V',scale=0.1)
+        t2 = Xmlab.text3d(x,y,z,'V',scale=0.1)
     else:
-        Xmlab.text3d(x,y,z,'V',scale=0.1, figure=figure)
-        
+        t2 = Xmlab.text3d(x,y,z,'V',scale=0.1, figure=figure)
+    
+    t2.vector_text.update()
+    
     # R: clockwise (right-hand circular)
     x,y,z = 0, 0, rad
     if figure == None:
-        Xmlab.text3d(x,y,z,'R',scale=0.1)
+        t3 = Xmlab.text3d(x,y,z,'R',scale=0.1)
     else:
-        Xmlab.text3d(x,y,z,'R',scale=0.1, figure=figure)
+        t3 = Xmlab.text3d(x,y,z,'R',scale=0.1, figure=figure)
+        
+    t3.vector_text.update()
     
     # L: counter-clockwise (left-hand circular)
     x,y,z = 0, 0, -rad
     if figure == None:
-        Xmlab.text3d(x,y,z,'L',scale=0.1) # orient_to_camera=True
+        t4 = Xmlab.text3d(x,y,z,'L',scale=0.1) # orient_to_camera=True
     else:
-        Xmlab.text3d(x,y,z,'L',scale=0.1, figure=figure) # orient_to_camera=True
+        t4 = Xmlab.text3d(x,y,z,'L',scale=0.1, figure=figure) # orient_to_camera=True
+    
+    t4.vector_text.update()
     
     return
 
