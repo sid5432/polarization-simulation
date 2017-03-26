@@ -8,6 +8,7 @@ green = (0,1,0)
 blue  = (0,0,1)
 cyan  = (0,1,1)
 orange = (1, 0.647, 0)
+yellow = (1,1,0)
 
 def sphere_coord(chi2, psi2):
     """
