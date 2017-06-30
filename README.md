@@ -18,5 +18,6 @@ at [http://morethanfootnotes.blogspot.com](http://morethanfootnotes.blogspot.com
 The programs are Python scripts, and require [numpy](http://www.numpy.org), [matplotlib](http://matplotlib.org/) and
 [mayavi](http://docs.enthought.com/mayavi/mayavi/).
 
+<img border="0" src="https://3.bp.blogspot.com/-7x2zjKGo2g4/WNa4PHkrf9I/AAAAAAAAAws/VIccZBFyRFwnbgCU5j3co1O71H8LxeZ4gCLcB/s320/poincare-sphere.png" width="252" height="320" />
 
-(*Last Revised 2017-03-26*)
+(*Last Revised 2017-06-30*)
