@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 import numpy as np
 from matplotlib import patches
@@ -6,7 +6,7 @@ from matplotlib.widgets import Slider,Button
 import pylab as plt
 import time
 # add this for windows pyinstaller
-import FileDialog
+# import FileDialog
 
 version = "2015-06-03"
 
@@ -33,7 +33,7 @@ def make_ellipse(a1,a2,delta, ax=None):
     # delta is given in degrees!
     
     if ax == None:
-        print "make_ellipse(): ax not defined; cannot plot!"
+        print("make_ellipse(): ax not defined; cannot plot!")
         return
     
     if delta == 0 or abs(delta) == 180.0:
@@ -49,6 +49,7 @@ def make_ellipse(a1,a2,delta, ax=None):
     ax.set_ylim([-6,6])
     
     delta = delta * np.pi/180.0 # convert to radians
+    fontsize = 15
     
     x, y = ellipse(a1,a2,delta)
     ax.plot( x,y, color='black')
@@ -86,7 +87,7 @@ def make_ellipse(a1,a2,delta, ax=None):
     x,y = my_axes( np.pi/2.0, 1.1*a2)
     ax.plot( x,y, color='blue')
     
-    x,y = my_axes( psi, 1.1*a)
+    x,y = my_axes( psi, 1.2*a)
     ax.plot( x,y, color='red')
     
     x,y = my_axes( psi+np.pi/2.0, 1.2*b)
@@ -103,26 +104,26 @@ def make_ellipse(a1,a2,delta, ax=None):
     
     # annotation
     # ax.annotate(r'$x$', xy=(a1,0), xytext=(a1+0.1, 0.1), fontsize='x-large' )
-    ax.annotate(r'$x$', xy=(a1,0), xytext=(a1+0.1, 0.1), fontsize=20 )
-    ax.annotate(r'$y$', xy=(0,a2), xytext=(0.1, a2+0.2), fontsize=20 )
+    ax.annotate(r'$x$', xy=(a1,0), xytext=(a1+0.1, 0.1), fontsize=fontsize )
+    ax.annotate(r'$y$', xy=(0,a2), xytext=(0.1, a2+0.2), fontsize=fontsize )
     
     # tilted axes labels
-    xt, yt = 1.1*a*np.cos(psi), 1.1*a*np.sin(psi),
-    ax.annotate(r'$\xi$', xy=(xt,yt), xytext=(xt+0.1, yt+0.2), fontsize=20 )
-    xt, yt = -1.2*b*np.sin(psi), 1.2*b*np.cos(psi),
-    ax.annotate(r'$\eta$', xy=(xt,yt), xytext=(xt-0.3, yt+0.3), fontsize=20 )
+    xt, yt = 1.2*a*np.cos(psi), 1.2*a*np.sin(psi),
+    ax.annotate(r'$\xi$', xy=(xt,yt), xytext=(xt+0.2, yt+0.3), fontsize=fontsize, color='red' )
+    xt, yt = -1.4*b*np.sin(psi), 1.3*b*np.cos(psi),
+    ax.annotate(r'$\eta$', xy=(xt,yt), xytext=(xt-0.3, yt+0.6), fontsize=fontsize, color='red' )
     
     # tilted axes length
     xt, yt = a*np.cos(psi), a*np.sin(psi),
-    ax.annotate(r'$a$', xy=(xt,yt), xytext=(xt-0.1, yt+0.3), fontsize=20 )
+    ax.annotate(r'$a$', xy=(xt,yt), xytext=(xt-0.1, yt+0.3), fontsize=fontsize )
     xt, yt = -b*np.sin(psi), b*np.cos(psi),
-    ax.annotate(r'$b$', xy=(xt,yt), xytext=(xt-0.1, yt+0.3), fontsize=20 )
+    ax.annotate(r'$b$', xy=(xt,yt), xytext=(xt-0.1, yt+0.3), fontsize=fontsize )
     
     # original axes length
     xt, yt = a1, -a2
-    ax.annotate(r'$a_1$', xy=(xt,yt), xytext=(xt-0.2, yt-0.6), fontsize=20 )
+    ax.annotate(r'$a_1$', xy=(xt,yt), xytext=(xt-0.2, yt-0.6), fontsize=fontsize )
     xt, yt = -a1, a2
-    ax.annotate(r'$a_2$', xy=(xt,yt), xytext=(xt-0.7, yt-0.1), fontsize=20 )
+    ax.annotate(r'$a_2$', xy=(xt,yt), xytext=(xt-0.7, yt-0.1), fontsize=fontsize )
 
     # angle arcs
     cent = [ 0, 0 ]
@@ -136,7 +137,7 @@ def make_ellipse(a1,a2,delta, ax=None):
     arc1 = patches.Arc( cent, 2.0, 2.0, 0, theta1, theta2, linewidth=2, color='red', label=r'$\psi')
     ax.add_patch(arc1)
     xt, yt = 1.0, 0.0
-    ax.annotate(r'$\psi$', xy=(xt,yt), xytext=(xt+0.1, yt+0.2), fontsize=20 )
+    ax.annotate(r'$\psi$', xy=(xt,yt), xytext=(xt+0.1, yt+0.2), fontsize=fontsize, color='red' )
     
     # chi angle
     cent = [ a*np.cos(psi), a*np.sin(psi) ]
@@ -150,7 +151,7 @@ def make_ellipse(a1,a2,delta, ax=None):
     arc1 = patches.Arc( cent, 2.0, 2.0, 0, theta1, theta2, linewidth=2, color='green', label=r'$\chi')
     ax.add_patch(arc1)
     xt, yt = cent
-    ax.annotate(r'$\chi$', xy=(xt,yt), xytext=(xt-1.8, yt-0.6), fontsize=20 )
+    ax.annotate(r'$\chi$', xy=(xt,yt), xytext=(xt-1.8, yt-0.6), fontsize=fontsize, color='green' )
 
     cent = [ -a1, 0 ]
     theta2 = 0
@@ -158,15 +159,15 @@ def make_ellipse(a1,a2,delta, ax=None):
     arc1 = patches.Arc( cent, 2.0, 2.0, 0, theta1, theta2, linewidth=2, color='orange', label=r'$\alpha')
     ax.add_patch(arc1)
     xt, yt = cent
-    ax.annotate(r'$\alpha$', xy=(xt,yt), xytext=(xt+1.2, yt-0.5), fontsize=20 )
+    ax.annotate(r'$\alpha$', xy=(xt,yt), xytext=(xt+1.2, yt-0.5), fontsize=fontsize, color='orange' )
     
     # text
-    ax.text(-12,-8,r'$\chi$ = %.3f $^\circ$' % (chi*180.0/np.pi) )
-    ax.text(-5,-8,r'$\psi$ = %.3f $^\circ$' % (psi*180.0/np.pi) )
-    ax.text( 5,-8,r'$\alpha$ = %.3f $^\circ$' % (alpha*180.0/np.pi) )
+    ax.text(-12,-8,r'$\chi$ = %.3f $^\circ$' % (chi*180.0/np.pi), fontsize=12 )
+    ax.text(-5,-8,r'$\psi$ = %.3f $^\circ$' % (psi*180.0/np.pi), fontsize=12 )
+    ax.text( 5,-8,r'$\alpha$ = %.3f $^\circ$' % (alpha*180.0/np.pi), fontsize=12 )
     
-    ax.text(-12,-9.5,r'(major) $a$ = %.3f' % a )
-    ax.text(-5,-9.5,r'(minor) $b$ = %.3f' % b )
+    ax.text(-12,-9.5,r'(major) $a$ = %.3f' % a, fontsize=12 )
+    ax.text(-2,-9.5,r'(minor) $b$ = %.3f' % b, fontsize=12 )
     
     # finish
     ax.figure.canvas.draw()
@@ -188,6 +189,7 @@ class MySlider(Slider):
         self.val = None
         Slider.__init__(self,*args, **kwargs)
         self.on_changed( self.replot )
+        self.label.set_size( 15 )
         
         return
     
@@ -217,7 +219,8 @@ class MySlider(Slider):
             self.ax.figure.canvas.draw()
         if not self.eventson: 
             return
-        for cid, func in self.observers.iteritems():
+        
+        for cid, func in self.observers.items():
             func(discrete_val)
         
         return
@@ -242,6 +245,9 @@ if __name__ == '__main__':
     a1,a2,delta = 5.0,4.0,60.0
     
     fig = plt.figure("Polarization Simulation (%s)" % version)
+    # fig.patch.set_facecolor('xkcd:mint green')
+    fig.patch.set_facecolor('#CCCCCC')
+    
     ax  = fig.add_axes([0.10,0.25,0.75,0.75],aspect='equal')
     fig.suptitle("Polarization Simulation")
     
