@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import numpy as np
 import vtk
 import mayavi.mlab as mlab
@@ -71,7 +71,7 @@ class Visualization(HasTraits):
         self.a1, self.a2 = input_stage.amplitudes( xbeta, xdelta, xtheta )
         
         x,y,z = calc(self.a1, self.a2, theta=self.theta, phi=self.phi)
-        self.plot = self.scene.mlab.plot3d(x, y, z, tube_radius=None, color=poincare.orange)
+        self.plot = self.scene.mlab.plot3d(x, y, z, tube_radius=0.01, color=poincare.orange)
         
         poincare.plot_grid(Xmlab=self.scene.mlab)
         poincare.land_marks(Xmlab=self.scene.mlab, figure=self.scene.mayavi_scene)
