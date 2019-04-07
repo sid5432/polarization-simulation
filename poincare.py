@@ -122,5 +122,5 @@ def land_marks(Xmlab=mlab,figure=None):
 
 # ===========================================================
 if __name__ == '__main__':
-    print "Test with tests/test_poincare.py"
+    print( "Test with tests/test_poincare.py")
     

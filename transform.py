@@ -16,7 +16,7 @@ def poincare(Ex, Ey, debug=False):
     delta[idx] = np.angle(Ey[idx]/Ex[idx])
     
     if debug:
-        print "a1 = %.3f, a2 = %.3f, delta = %.3f " % ( a1,a2,delta )
+        print( "a1 = %.3f, a2 = %.3f, delta = %.3f " % ( a1,a2,delta ) )
     # NOTE: delta is between -pi and +pi
     
     alpha2 = 2.0*np.arctan2( a2, a1 )
@@ -61,14 +61,14 @@ if __name__ == '__main__':
     # a1,a2, delta = f1(Ex, Ey)
     # print "TEST: got a1 = ",a1," a2 = ",a2," delta = ", (delta*180.0/np.pi)
 
-    print "TEST: array"
+    print( "TEST: array" )
     Ex = np.array([ 1.0 + 0.2j, 1.0 - 0.2j, 1.0 + 0.2j, 0.0 ])
     Ey = np.array([ 1.0 - 0.2j, 1.0 + 0.2j, 1.0 - 0.2j, 1.0 ])
     
     chi2, psi2 = poincare(Ex, Ey)
     
-    print "TEST: ellipticity    chi ", chi2/2.0
-    print "TEST: azimuth (tilt) psi ", psi2/2.0
+    print( "TEST: ellipticity    chi ", chi2/2.0 )
+    print( "TEST: azimuth (tilt) psi ", psi2/2.0 )
 
     
 
