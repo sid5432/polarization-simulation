@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 import numpy as np
+import logging
+import sys
+
 import vtk
 import mayavi.mlab as mlab
 
 from traits.api import HasTraits, Range, Instance, on_trait_change
 from traitsui.api import View, Item, HGroup, VGroup
+
 from tvtk.pyface.scene_editor import SceneEditor
 from mayavi.tools.mlab_scene_model import MlabSceneModel
 from mayavi.core.ui.mayavi_scene import MayaviScene
@@ -108,15 +112,45 @@ class Visualization(HasTraits):
                 resizable=True,
                 scrollable=True
                )
-    
 
+# =======================================================================
+# logging: ref: https://www.electricmonk.nl/log/2011/08/14/redirect-stdout-and-stderr-to-a-logger-in-python/
+#
+class StreamToLogger(object):
+       """
+       Fake file-like stream object that redirects writes to a logger instance.
+       """
+       def __init__(self, logger, log_level=logging.INFO):
+           self.logger = logger
+           self.log_level = log_level
+           self.linebuf = ''
+           
+           def write(self, buf):
+               for line in buf.rstrip().splitlines():
+                   self.logger.log(self.log_level, line.rstrip())
+                   
+logging.basicConfig(
+                    level=logging.DEBUG,
+                    format='%(asctime)s:%(levelname)s:%(name)s:%(message)s',
+                    filename="log_per_sim.log",
+                    # filemode='a'
+                   )
+
+# =======================================================================
 # main
 if __name__ == '__main__':
+    if len(sys.argv) >= 2 and sys.argv[1] == '-h':
+        print("HINT: set environment variables ETS_TOOLKIT to 'qt4' or 'wx'")
+        print("      for 'qt4', try setting QT_API to 'pyqt', 'pyqt5', 'pyside', or 'pyside2'")
+        
     # redirect output to log file
-    output = vtk.vtkFileOutputWindow()
-    output.SetFileName("log.txt")
-    # vtk.vtkOutputWindow().SetInstance(output)
-    output.SetInstance(output)
+    stdout_logger = logging.getLogger('STDOUT')
+    sl = StreamToLogger(stdout_logger, logging.INFO)
+    sys.stdout = sl
+     
+    stderr_logger = logging.getLogger('STDERR')
+    sl = StreamToLogger(stderr_logger, logging.ERROR)
+    sys.stderr = sl
     
     visualization = Visualization()
     visualization.configure_traits()
