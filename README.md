@@ -9,7 +9,7 @@ These are small programs to simulate the state-of-polarization (SOP) of
 2. the SOP of light passing through a polarization maintaining (PM) optical fiber patchcord
 (*per_sim.py*), and
 
-<img border="0" src="http://1.bp.blogspot.com/-Jw_bIrsF8MI/VdkDoXaF-CI/AAAAAAAAAe4/_EwGZFg9pRg/s1600/psphere2.png" height=220" />
+<img border="0" src="http://1.bp.blogspot.com/-Jw_bIrsF8MI/VdkDoXaF-CI/AAAAAAAAAe4/_EwGZFg9pRg/s1600/psphere2.png" height="220" />
 
 3. the SOP of light passing through a PM optical fiber (*pmfiber_sim.py*)
 
