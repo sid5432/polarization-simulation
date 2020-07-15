@@ -29,6 +29,16 @@ been tested in Python 2.7.12 and Python 3.5.2, 3.6.7, and 3.7.3.
 
 ## Notes on Installing Matplotlib, Mayavi and Friends on Linux
 
+> *Update: 2020-07-15*
+>
+> *With the new Ubuntu 20.04 and Python 3.8.3, most of the problems mentioned here 
+have gone away. Nowadays I use pyenv almost exclusively; installing wxPython with pyenv 
+works, and Qt5 does not cause any problem with incorrect rendering in Mayavi now. 
+However, installing Mayavi with pip may fail to compile. See 
+[this post at stackoverflow](https://stackoverflow.com/questions/27682120/installing-mayavi-with-pip-building-tvtk-classes-assertion-failed)
+for a solution. This problem might already be fixed by the time you read this.*
+
+
 The program for showing the SOP of a plane wave (the first program, *polarization_sim.py*)
 uses [matplotlib](http://matplotlib.org/). This one should be easy to install. 
 If you are using any of the [Ubuntu](https://www.ubuntu.com/) derivatives
@@ -235,4 +245,4 @@ perform similarly (and adequately) as a VM in a Linux host, the rendering in VMw
 be much better in a Windows 10 host. This was just a quick experiment with my particular 
 computer hardware and setup, so your mileage may vary; take this with a grain of salt.
 
-(*Last Revised 2019-04-21*)
+(*Last Revised 2020-07-14*)
