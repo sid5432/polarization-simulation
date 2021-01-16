@@ -91,6 +91,8 @@ class Visualization(HasTraits):
         xdelta = self.delta * cvtfactor
         xtheta = self.theta_1 * cvtfactor
         self.a1, self.a2 = input_stage.amplitudes( xbeta, xdelta, xtheta )
+        print(f"delta={self.delta}, a1={self.a1}, a2={self.a2}");
+        print(f"beta={xbeta}, delta={xdelta}, theta={xtheta}");
         
         x, y, z = calc(self.a1, self.a2, theta=self.theta, phi=self.phi)
         self.plot.mlab_source.set(x=x, y=y, z=z)
@@ -144,13 +146,13 @@ if __name__ == '__main__':
         print("      for 'qt4', try setting QT_API to 'pyqt', 'pyqt5', 'pyside', or 'pyside2'")
         
     # redirect output to log file
-    stdout_logger = logging.getLogger('STDOUT')
-    sl = StreamToLogger(stdout_logger, logging.INFO)
-    sys.stdout = sl
-     
-    stderr_logger = logging.getLogger('STDERR')
-    sl = StreamToLogger(stderr_logger, logging.ERROR)
-    sys.stderr = sl
+    # stdout_logger = logging.getLogger('STDOUT')
+    # sl = StreamToLogger(stdout_logger, logging.INFO)
+    # sys.stdout = sl
+    
+    # stderr_logger = logging.getLogger('STDERR')
+    # sl = StreamToLogger(stderr_logger, logging.ERROR)
+    # sys.stderr = sl
     
     visualization = Visualization()
     visualization.configure_traits()

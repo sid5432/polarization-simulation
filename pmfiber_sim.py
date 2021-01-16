@@ -156,10 +156,10 @@ if __name__ == '__main__':
     stdout_logger = logging.getLogger('STDOUT')
     sl = StreamToLogger(stdout_logger, logging.INFO)
     sys.stdout = sl
-     
-    stderr_logger = logging.getLogger('STDERR')
-    sl = StreamToLogger(stderr_logger, logging.ERROR)
-    sys.stderr = sl
+    
+    # stderr_logger = logging.getLogger('STDERR')
+    # sl = StreamToLogger(stderr_logger, logging.ERROR)
+    # sys.stderr = sl
     
     visualization = Visualization()
     visualization.configure_traits()
