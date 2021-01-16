@@ -27,6 +27,40 @@ The programs are Python scripts, and require [numpy](http://www.numpy.org),
 been tested in Python 2.7.12 and Python 3.5.2, 3.6.7, and 3.7.3.
 
 
+## JavaScript Version
+(*Update: 2021-01-15*)
+
+A port of the two Poincare Sphere simulations has been ported to an
+interactive web page, using the [three.js](https://threejs.org) JavaScript
+library. The GitHub page is at
+
+	http://sid5432.github.io/polarization-simulation/index.html
+    
+click [here](http://sid5432.github.io/polarization-simulation/index.html) to 
+go to the page. The entire simulation is included in the single file **index.html**;
+everything (including the JavaScript code) is contained in this single file. 
+However, it depend on the three.js library. 
+The JavaScript code is "hot linked" to the library at threejs.org;
+i.e., it pulls several JavaScript modules from the threejs.org website.
+
+If you want to run it without internet access, you will need to get a copy of 
+the three.js library and modify the script to pull from your local copy. 
+But you may need to run/host the page with a web server; 
+usually you will get some warning (if you look at the web console of the browser) 
+that the browser is blocking the import of the JavaScript libraries because of 
+"Cross-Origin Request".
+
+If you have python installed on your computer, you should be able to start 
+(on the command line) a simple web server 
+(in the folder where the *.html file is saved) with the commands
+
+    python -m http.server 
+
+This will start a simple web server on your local computer on port 8000. 
+Point your browser to https://localhost:8000/ and you should see the *.html file.
+    
+
+
 ## Notes on Installing Matplotlib, Mayavi and Friends on Linux
 
 > *Update: 2020-07-15*
@@ -245,4 +279,4 @@ perform similarly (and adequately) as a VM in a Linux host, the rendering in VMw
 be much better in a Windows 10 host. This was just a quick experiment with my particular 
 computer hardware and setup, so your mileage may vary; take this with a grain of salt.
 
-(*Last Revised 2020-07-14*)
+(*Last Revised 2021-01-15*)
