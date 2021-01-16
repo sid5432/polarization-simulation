@@ -33,6 +33,7 @@
       <h1 style="width:100%;text-align:center">
       Optical Fiber State-of-Polarization Representation on a Poincare Sphere
       </h1>
+      
       This web page demonstration uses the <A HREF="https://threejs.org">three.js</A>
       JavaScript library to visualize the state-of-polarization (SOP)
       representation of
@@ -87,6 +88,8 @@
     into the PM fiber, where there are no input or output stages that
     will alter the SOP. The <i>x</i> and </i>y</i> axes correspond to
     the slow- and fast-axes of the PM fiber. Here are the parameters:
+    (<span style="color:red"><i>Work-in-progress; this part not
+    working yet.</i></span>)
     
     <ul>
     <li> <b>|C|</b>:
@@ -133,30 +136,46 @@
             The State-of-polarization Trajectory of a Polarization Maintaining Optical Fibers on the Poincare Sphere
           </A>
 	  </ul>
-	  <p>(<i>Last Revised 2021-01-14</i>)
 	  
-    <p><b>Download</b>
-    <p> If you want to download and modify this demonstration, simply
-    grab this HTML file; everything (including the JavaScript code) is
-    contained in this single file. It does however depend on the
-    <A HREF="https://threejs.org">three.js</A> library. The JavaScript
-    code in this page is "hot linked" to the library at
-    <i>threejs.org</i>. 
-    
-    <p> Simply save the HTML file as "per2.html" and open the file with a
-    web browser.
-
-    <p> If you want to run this without internet
-    access, you will need to get a copy of the three.js library and
-    modify the script to pull from your local copy. But you may need to
-    run/host the page from some web server; usually you will get some
-    warning (if you look at the web console of the browser) that the
-    browser is blocking the import of the JavaScript libraries because
-    of "Cross-Origin Request".
-    
+    <p><b>Download and Running a Private Copy</b>
+    <p> If you want to run your own copy, or modify this demonstration, simply
+    go to the <A
+    HREF="https://github.com/sid5432/polarization-simulation">GitHub page</A>
+    and grab <code>index.html</code>, and rename it to something
+    sensible (with the <code>html</code> file extension).
+    Then and open the file with a web browser.
     
     <p>
-    (<i>Last revised 2021-01-14</i>)
+    Everything (including the JavaScript code) is
+    contained in this single file. However, it depend on the
+    <A HREF="https://threejs.org">three.js</A> library. The JavaScript
+    code in this page is "hot linked" to the library at
+    <i>threejs.org</i>; i.e., it pulls several JavaScript modules from
+    the <i>threejs.org</i> website.
+
+    <p> If you want to run it without internet
+    access, you will need to get a copy of the <i>three.js</i> library and
+    modify the script to pull from your local copy. But you may need to
+    run/host the page with a web server; usually you will get some
+    warning (if you look at the web console of the browser) that the
+    browser is blocking the import of the JavaScript libraries because
+    of "Cross-Origin Request". 
+    
+    <p> If you have python installed on your
+    computer, you should be able to start (on the command line) a simple web server (in the
+    folder where the <i>*.html</i> file is saved) with the commands
+    
+    <blockquote><code>
+    python -m http.server
+    </code></blockquote>
+    
+    <p> This will start a simple web server on your local computer on
+    port 8000. Point your browser to
+    <code>https://localhost:8000/</code> and you should see the
+    <i>*.html</i> file.
+    
+    <p>
+    (<i>Last revised 2021-01-15</i>)
     </div> 
     
     <script type="module">
