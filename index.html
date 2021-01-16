@@ -187,7 +187,7 @@
     <i>*.html</i> file.
     
     <p>
-    (<i>Last revised 2021-01-15</i>)
+    (<i>Last revised 2021-01-16</i>)
     </div> 
     
     <script type="module">
@@ -195,6 +195,8 @@
       import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js';
       import { GUI } from 'https://threejs.org/examples/jsm/libs/dat.gui.module.js';
       import { TrackballControls } from "https://threejs.org/examples/jsm/controls/TrackballControls.js";
+      
+      import { WEBGL } from "https://threejs.org/examples/jsm/WebGL.js";
       
       let mycanvas, stats;
       let camera, controls, scene, renderer;
@@ -258,17 +260,27 @@
               return optionalTarget.set(tx,ty,tz).multiplyScalar( this.scale );
           }
       }      
-
-      init();
+      
+      if ( WEBGL.isWebGLAvailable() ) {
+          init();
+      }else{
+          const warning = WEBGL.getWebGLErrorMessage();
+          document.getElementById('canvas').appendChild( warning );
+	  
+	  // console.log("error condition");
+	  // var wstring = document.createTextNode("Sorry, your web browser ");
+	  // document.getElementById('canvas').appendChild(wstring);
+      }
       
       loadFont('R', 0, 0, 12);
       loadFont('L', 0, 0, -15);
       loadFont('H', 13, 0, 0);
       loadFont('V', -13, 0, 0);
       
-      animate();
-      
-      // renderer.domElement.addEventListener( 'mousemove', onMouseMove );
+      if ( WEBGL.isWebGLAvailable() ) {
+         animate();
+	 // renderer.domElement.addEventListener( 'mousemove', onMouseMove );
+      }
       
       function init() {
           
