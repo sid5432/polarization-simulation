@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>State-of-Polarization Visualization on a Poincare Sphere</title>
+    <title>Optical Fiber SOP Representation on a Poincare Sphere</title>
     <meta charset="UTF-8"/>
-    <link rel="stylesheet" href="./css/main.css">
     <style>
       #container {
           position: relative;
@@ -31,9 +30,22 @@
 
   <body>
     <blockquote id="titleblock">
-      <h1 style="width:100%;text-align:center">Poincare Sphere and State of Polarization</h1>
-      This is a demonstration of the Poincare sphere applied to the polarization state of an
-      optical fiber.
+      <h1 style="width:100%;text-align:center">
+      Optical Fiber State-of-Polarization Representation on a Poincare Sphere
+      </h1>
+      This web page demonstration uses the <A HREF="https://threejs.org">three.js</A>
+      JavaScript library to visualize the state-of-polarization (SOP)
+      representation of
+      light passing through a polarization maintaining (PM) optical fiber patchcord
+      or a PM optical fiber on a Poincare Sphere.
+      
+      <p>
+      For details on the physics and mathematics, please see the
+      references listed below. This is a port of 
+      <A HREF="https://github.com/sid5432/polarization-simulation">
+      my Python script using
+      the Mayavi library</A>.
+      
     </blockquote>
 
     <div id="container" style="margin:10pt 50pt 10pt 50pt;height:400px;">
@@ -42,8 +54,77 @@
       <div id="stats"></div>
     </div>
     
-    <div style="margin:10pt 20pt 20pt 20pt;"><i>Reference:</i>
-
+    <div style="margin:10pt 20pt 20pt 30pt;">
+    <p><b>Parameters</b>
+    
+    <p><i>Patch Cord:</i>
+    
+    <p> We assume we are launching a perfect linearly polarized light
+    into the patch cord. The <i>x</i> and </i>y</i> axes correspond to
+    the slow- and fast-axes of the PM fiber. Here are the parameters:
+    
+    <ul>
+    <li> <b>I/P &theta;</b>: This is a rotation of the light
+    polarization induced by the (loss-less) input stage
+    
+    <li> <b>I/P &delta;</b>: This is the phase delay 
+    induced by the input stage, between the slow- and fast-axes field
+    components
+    
+    <li> <b>I/P &beta;</b>:  Input rotation angle. This is the angle
+    of the direction of polarization of the linearly-polarized input
+    light with respect to the <i>x</i> axis
+    
+    <li> <b>O/P &theta;</b>: Output detector rotation angle (relative
+    to the slow- and fast-axes)
+    
+    <li> <b>O/P &phi;</b>:   Output stage induced phase delay
+    </ul>
+    
+    <p><i>Polarization Maintaining Fiber:</i>
+    
+    <p> We assume we are launching a perfect linearly polarized light
+    into the PM fiber, where there are no input or output stages that
+    will alter the SOP. The <i>x</i> and </i>y</i> axes correspond to
+    the slow- and fast-axes of the PM fiber. Here are the parameters:
+    
+    <ul>
+    <li> <b>|C|</b>:
+    
+    <li> <b>arg C</b>:
+    
+    <li> <b>&phi;</b>:
+    
+    <li> <b>&Delta;</b>:
+    
+    </ul>
+    
+    <p><b>Navigation</b>
+    
+    <p>
+    <ul>
+    <li> Hold down the left mouse-button and drag to rotate the sphere
+    <li> Use the mouse-wheel to zoom in and out
+    <li> Hold down the right mouse-button and drag to pan (move the sphere).
+    </ul>
+    
+    <p><b>Changing Parameters</b>
+    
+    <ul>
+    <li> Click on a bar, hold down the left mouse-button to drag
+    left-and-right to change the value, or
+    <li> Hold down the right mouse-button and drag up-and-down to
+    change the value, you can also
+    <li> Click on the numbers in the right of the bar and type in a
+    number, or
+    <li> Hold down the left mouse-button and draw up-and-down to
+    change the value
+    </ul>
+    
+    <p><b>References</b>
+    <p> The physics and mathematics of the visualization is explained
+    in detail in two posts in <A HREF="http://morethanfootnotes.blogspot.com/">my blog</A>
+    
       <ul>
         <li> <A HREF="http://morethanfootnotes.blogspot.com/2015/08/notes-on-measuring-polarization.html?view=classic">
             Notes on Measuring Polarization Extinction Ratio of an Optical Fiber Patch Cord
@@ -51,14 +132,38 @@
         <li> <A HREF="http://morethanfootnotes.blogspot.com/2017/03/the-state-of-polarization-trajectory-of.html?view=classic">
             The State-of-polarization Trajectory of a Polarization Maintaining Optical Fibers on the Poincare Sphere
           </A>
+	  </ul>
+	  <p>(<i>Last Revised 2021-01-14</i>)
+	  
+    <p><b>Download</b>
+    <p> If you want to download and modify this demonstration, simply
+    grab this HTML file; everything (including the JavaScript code) is
+    contained in this single file. It does however depend on the
+    <A HREF="https://threejs.org">three.js</A> library. The JavaScript
+    code in this page is "hot linked" to the library at
+    <i>threejs.org</i>. 
+    
+    <p> Simply save the HTML file as "per2.html" and open the file with a
+    web browser.
 
+    <p> If you want to run this without internet
+    access, you will need to get a copy of the three.js library and
+    modify the script to pull from your local copy. But you may need to
+    run/host the page from some web server; usually you will get some
+    warning (if you look at the web console of the browser) that the
+    browser is blocking the import of the JavaScript libraries because
+    of "Cross-Origin Request".
+    
+    
+    <p>
+    (<i>Last revised 2021-01-14</i>)
     </div> 
     
     <script type="module">
-      import * as THREE from "./build/three.module.js";
-      import Stats from './examples/jsm/libs/stats.module.js';
-      import { GUI } from './examples/jsm/libs/dat.gui.module.js';
-      import { TrackballControls } from "./examples/jsm/controls/TrackballControls.js";
+      import * as THREE from "https://threejs.org/build/three.module.js";
+      import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js';
+      import { GUI } from 'https://threejs.org/examples/jsm/libs/dat.gui.module.js';
+      import { TrackballControls } from "https://threejs.org/examples/jsm/controls/TrackballControls.js";
       
       let mycanvas, stats;
       let camera, controls, scene, renderer;
@@ -66,7 +171,7 @@
       
       let gui = new GUI( { autoPlace: false } );
       let menu1 = gui.addFolder('Patch Cord Parameters');
-      // let menu2 = gui.addFolder('Fiber Parameters');
+      let menu2 = gui.addFolder('Fiber Parameters');
       
       mycanvas = document.getElementById('canvas');
       const cwidth = 800;
@@ -93,7 +198,7 @@
           beta: 12,  // Input stage linear polarization rotation angle
           theta: 0, // Output stage rotation angle
           phi: 0,   // Output stage phase delay
-          // patchcord: true,
+          patchcord: true,
       };
       var params2 = { // fiber
           C: 20,
@@ -244,15 +349,13 @@
 	  menu1.add( params1, 'phi',-90,90 ).name( 'O/P &phi; (&deg;)' ).onChange( drawcirc1 );
           menu1.open();
 
-          /*
           menu2.add( params2, 'C',1,100 ).name( '|C|' ).onChange( drawcirc2 );
-	  menu2.add( params2, 'argC',-90,90 ).name( 'arg C; (&deg;)' ).onChange( drawcirc2 );
+	  menu2.add( params2, 'argC',-90,90 ).name( 'arg C (&deg;)' ).onChange( drawcirc2 );
 	  menu2.add( params2, 'phi',-90,90 ).name( '&phi; (&deg;)' ).onChange( drawcirc2 );
 	  menu2.add( params2, 'delta',-90,90 ).name( '&Delta; (&deg;)' ).onChange( drawcirc2 );
           menu2.close();
-          */
           
-          // gui.add( params1, 'patchcord').name( 'Patch cord?' ).onChange( modeswitch );
+          gui.add( params1, 'patchcord').name( 'Patch cord?' ).onChange( modeswitch );
           
           mycanvas.appendChild( renderer.domElement );
           document.getElementById('stats').appendChild( stats.domElement );
@@ -266,7 +369,7 @@
 
       function loadFont(text, x, y ,z) {
           const loader = new THREE.FontLoader();
-          const font = "../fonts/helvetiker_regular.typeface.json";
+          const font = "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json";
           loader.load( font, function (font) {
               var textGeo = new THREE.TextGeometry( text, {
                   font: font,
