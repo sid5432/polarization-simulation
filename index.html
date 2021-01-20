@@ -43,7 +43,7 @@
   <body>
     <blockquote id="titleblock">
       <h1 style="width:100%;text-align:center">
-      Optical Fiber State-of-Polarization Representation on a Poincare Sphere
+      Optical Fiber State-of-Polarization Representation<br/>on a Poincare Sphere
       </h1>
       
       This web page demonstration uses the <A HREF="https://threejs.org">three.js</A>
@@ -70,6 +70,7 @@
     <div style="margin:10pt 20pt 20pt 30pt;">
     <p><b>Parameters</b>
     
+    <div ID="explain1">
     <p><i>Patch Cord:</i>
     
     <p> We assume we are launching a perfect linearly polarized light
@@ -93,26 +94,30 @@
     
     <li> <b>O/P &phi;</b>:   Output stage induced phase delay
     </ul>
+    </div>
     
+    <div ID="explain2" style="display:none">
     <p><i>Polarization Maintaining Fiber:</i>
     
-    <p> We assume we are launching a perfect linearly polarized light
-    into the PM fiber, where there are no input or output stages that
-    will alter the SOP. The <i>x</i> and </i>y</i> axes correspond to
-    the slow- and fast-axes of the PM fiber. Here are the parameters:
-    (<span style="color:red"><i>Work-in-progress; this part not
-    working yet.</i></span>)
+    <p> In this case we do <em>not</em> assume we are launching a perfect linearly polarized light
+      into the PM fiber, but allow a phase difference of 2&Delta; between the
+      X-axis (slow) and Y-axis (fast) field components. However, in the case of PM fibers,
+      there are no input or output stages that will alter the SOP going into the fiber.
+      Here are the parameters: 
     
     <ul>
-    <li> <b>|C|</b>:
+    <li> <b>|C|</b>: magnitude (absolute value) of coupling coefficient (C) 
     
-    <li> <b>arg C</b>:
+    <li> <b>arg C</b>: angle of coupling coefficient (C) 
     
-    <li> <b>&phi;</b>:
+    <li> <b>&phi;</b>: field component angle with respect to
+    <i>x</i>-axis (slow axis)
     
-    <li> <b>&Delta;</b>:
+    <li> <b>&Delta;</b>: half phase difference between field input X (slow)
+    and Y (fast) components
     
     </ul>
+    </div>
     
     <p><b>Navigation</b>
     
@@ -187,7 +192,7 @@
     <i>*.html</i> file.
     
     <p>
-    (<i>Last revised 2021-01-15</i>)
+    (<i>Last revised 2021-01-19</i>)
     </div> 
     
     <script type="module">
@@ -196,9 +201,11 @@
       import { GUI } from 'https://threejs.org/examples/jsm/libs/dat.gui.module.js';
       import { TrackballControls } from "https://threejs.org/examples/jsm/controls/TrackballControls.js";
       
+      import { WEBGL } from "https://threejs.org/examples/jsm/WebGL.js";
+      
       let mycanvas, stats;
       let camera, controls, scene, renderer;
-      let ringmesh;
+      let ringmesh, evpolemesh;
       
       let gui = new GUI( { autoPlace: false } );
       let menu1 = gui.addFolder('Patch Cord Parameters');
@@ -222,6 +229,12 @@
           emissive: 0x072534,
           flatShading: true,
       });
+      const polemat = new THREE.MeshPhongMaterial( {
+          color: 0xffffff,
+          emissive: 0x072534,
+          flatShading: true,
+          side: THREE.DoubleSide,          
+      });
       
       var params1 = { // patch cord
 	  theta_1: 8, // Input stage rotation angle
@@ -232,9 +245,9 @@
           patchcord: true,
       };
       var params2 = { // fiber
-          C: 20,
-          argC: 63,
-	  phi: 0.0,
+          C: 20.0,
+          argC: 63.0,
+          phi: 0.0,
           delta: 0.0,
       };
 
@@ -243,8 +256,37 @@
           a2: 1,
           theta: 0,
           phi: 0,
-      }
+      };
 
+      var results2 = {
+          dbeta: 1.0,
+          Cabs: 0.2,
+          om: 1.1,
+          phi: 0.0,
+          Delta: 0.0,
+      };
+
+      var tmpstore = {
+          /* hack: we use this as temporary storage of intermediate results
+           * in the PM fiber calculation; used in ev() first, then in trajectory()
+           */
+          C_re: 0,
+          C_im: 0,
+          gm: 0,
+          D: 0,
+          eps: 0,
+          eps2: 0,
+          ff: 0,
+          s10: 0,
+          s20: 0,
+          s30: 0,
+          Xre: 0,
+          Xim: 0,
+          Yre: 0,
+          Yim: 0,
+      }
+      
+      // trajectory for patch cord
       class Ring extends THREE.Curve {
           constructor( scale = 10.1 ) {
               super();
@@ -257,18 +299,50 @@
               
               return optionalTarget.set(tx,ty,tz).multiplyScalar( this.scale );
           }
-      }      
+      }
 
-      init();
+      // the two poles representing the eigenvalue SOP for PM fiber
+      class Evpole extends THREE.Curve {
+          constructor( scale = 10.1 ) {
+              super();
+              this.scale = scale;
+          }
+
+          getPoint( t, optionalTarget = new THREE.Vector3() ) {
+              
+              var [tx, ty, tz] = ev(results2.dbeta, results2.Cabs, results2.om, results2.phi, results2.Delta, 2.0*t-1.0);
+              return optionalTarget.set(tx,ty,tz).multiplyScalar( this.scale );
+          }
+      }
       
-      loadFont('R', 0, 0, 12);
-      loadFont('L', 0, 0, -15);
-      loadFont('H', 13, 0, 0);
-      loadFont('V', -13, 0, 0);
+      // trajectory for PM fiber
+      class Ring2 extends THREE.Curve {
+          constructor( scale = 10.1 ) {
+              super();
+              this.scale = scale;
+          }
+
+          getPoint( t, optionalTarget = new THREE.Vector3() ) {
+              
+              var [tx, ty, tz] = trajectory(results2.dbeta, results2.Cabs, results2.om, results2.phi, results2.Delta, twopi*t);
+              return optionalTarget.set(tx,ty,tz).multiplyScalar( this.scale );
+          }
+      }      
       
-      animate();
-      
-      // renderer.domElement.addEventListener( 'mousemove', onMouseMove );
+      if ( WEBGL.isWebGLAvailable() ) {
+          init();
+	  
+	  loadFont('R', 0, 0, 12);
+	  loadFont('L', 0, 0, -15);
+	  loadFont('H', 13, 0, 0);
+	  loadFont('V', -13, 0, 0);
+	  
+	  animate();
+	  // renderer.domElement.addEventListener( 'mousemove', onMouseMove );
+      }else{
+          const warning = WEBGL.getWebGLErrorMessage();
+          mycanvas.appendChild( warning );
+      }
       
       function init() {
           
@@ -364,6 +438,14 @@
           ringmesh = new THREE.Mesh( ringgeo, ringmat );
           scene.add( ringmesh );
           drawcirc1();
+
+          // ev-poles
+          var path2 = new Evpole(10.0);
+          var polegeo = new THREE.TubeBufferGeometry( path2, 10, 0.2, 12, false);
+          evpolemesh = new THREE.Mesh( polegeo, polemat );
+          scene.add( evpolemesh );
+          // initial: we don't drawcirc2()
+          evpolemesh.visible = false;
           
           camera.position.set(30,20,30);
           camera.lookAt( scene.position );
@@ -373,20 +455,20 @@
           // need this because new Status overrides the original CSS
           stats.dom.style.cssText = "position:absolute;top:0;left:0;";
           
-	  menu1.add( params1, 'theta_1',-90,90 ).name( 'I/P &theta; (&deg;)' ).onChange( drawcirc1 );
-	  menu1.add( params1, 'delta',-90,90 ).name( 'I/P &delta; (&deg;)' ).onChange( drawcirc1 );
-	  menu1.add( params1, 'beta',-90,90 ).name( 'I/P &beta; (&deg;)' ).onChange( drawcirc1 );
-	  menu1.add( params1, 'theta',-90,90 ).name( 'O/P &theta; (&deg;)' ).onChange( drawcirc1 );
-	  menu1.add( params1, 'phi',-90,90 ).name( 'O/P &phi; (&deg;)' ).onChange( drawcirc1 );
+	  menu1.add( params1, 'theta_1',-180,180 ).name( 'I/P &theta; (&deg;)' ).onChange( drawcirc1 );
+	  menu1.add( params1, 'delta',-180,180 ).name( 'I/P &delta; (&deg;)' ).onChange( drawcirc1 );
+	  menu1.add( params1, 'beta',-180,180 ).name( 'I/P &beta; (&deg;)' ).onChange( drawcirc1 );
+	  menu1.add( params1, 'theta',-180,180 ).name( 'O/P &theta; (&deg;)' ).onChange( drawcirc1 );
+	  menu1.add( params1, 'phi',-180,180 ).name( 'O/P &phi; (&deg;)' ).onChange( drawcirc1 );
           menu1.open();
 
           menu2.add( params2, 'C',1,100 ).name( '|C|' ).onChange( drawcirc2 );
-	  menu2.add( params2, 'argC',-90,90 ).name( 'arg C (&deg;)' ).onChange( drawcirc2 );
-	  menu2.add( params2, 'phi',-90,90 ).name( '&phi; (&deg;)' ).onChange( drawcirc2 );
-	  menu2.add( params2, 'delta',-90,90 ).name( '&Delta; (&deg;)' ).onChange( drawcirc2 );
+	  menu2.add( params2, 'argC',-180,180 ).name( 'arg C (&deg;)' ).onChange( drawcirc2 );
+	  menu2.add( params2, 'phi',-180,180 ).name( '&phi; (&deg;)' ).onChange( drawcirc2 );
+	  menu2.add( params2, 'delta',-180,180 ).name( '&Delta; (&deg;)' ).onChange( drawcirc2 );
           menu2.close();
           
-          gui.add( params1, 'patchcord').name( 'Patch cord?' ).onChange( modeswitch );
+          gui.add( params1, 'patchcord').name( 'Draw patch cord SOP?' ).onChange( modeswitch );
           
           mycanvas.appendChild( renderer.domElement );
           document.getElementById('stats').appendChild( stats.domElement );
@@ -439,9 +521,21 @@
           if ( value ) {
               menu1.open();
               menu2.close();
+	      
+	      document.getElementById('explain1').style.display = "block";
+	      document.getElementById('explain2').style.display = "none";
+	      
+              evpolemesh.visible = false;
+              drawcirc1();
           }else{
               menu1.close();
               menu2.open();
+	      
+	      document.getElementById('explain1').style.display = "none";
+	      document.getElementById('explain2').style.display = "block";
+	      
+              evpolemesh.visible = true;
+              drawcirc2();
           }
       }
 
@@ -512,7 +606,7 @@
           var a1 = Math.sqrt( Ex_re*Ex_re + Ex_im*Ex_im );
           var a2 = Math.sqrt( Ey_re*Ey_re + Ey_im*Ey_im );
 
-          var delta = 0; /// np.angle(Ey/Ex) ; more work needed
+          var delta = 0;
           if ( Ex_re != 0 || Ex_im != 0 ) {
               delta = Math.atan2(Ey_im, Ey_re) - Math.atan2(Ex_im, Ex_re);
           }
@@ -572,9 +666,100 @@
           ringmesh.geometry.dispose();
           ringmesh.geometry = new THREE.TubeBufferGeometry( path, 64, 0.2, 12, true);
       }
+      
+      function ev( dbeta, Cabs, om, phi, Delta, xx) {
+          // for PM fiber propagation:
+          // these correspond to the eigenvalues on the Poincare sphere
+          var C_re = tmpstore.C_re = Cabs * Math.cos(om);
+          var C_im = tmpstore.C_im = Cabs * Math.sin(om);
+          
+          var gm = tmpstore.gm = Math.sqrt( dbeta*dbeta + Cabs*Cabs );
+          var D  = tmpstore.D = gm - dbeta;
+
+          var eps = tmpstore.eps = D/Cabs;
+          var eps2 = tmpstore.eps2 = eps*eps;
+          var s10 = tmpstore.s10 = (1-eps2)/(1+eps2);
+          var ff = tmpstore.ff = 2* eps / (1+eps2);
+          var s20 = tmpstore.s20 = ff * Math.sin(om);
+          var s30 = tmpstore.s30 = ff * Math.cos(om);
+
+          // we don't need these for the poles, but we calculate them here
+          // to avoid repeating the calculations when generating the circle (varying theta)
+          var cosphi = Math.cos(phi);
+          var sinphi = Math.sin(phi);
+          var Delta2 = Delta/2.0;
+          var cosDelta2 = Math.cos(Delta2);
+          var sinDelta2 = Math.sin(Delta2);
+          
+          var X10_re = tmpstore.Xre = cosphi * cosDelta2;
+          var X10_im = tmpstore.Xim = -cosphi * sinDelta2;
+
+          var X20_re = tmpstore.Yre = sinphi * cosDelta2;
+          var X20_im = tmpstore.Yim = sinphi * sinDelta2;          
+          
+          return [s10*xx,s20*xx,s30*xx];
+      }
+      
+      function trajectory( dbeta, Cabs, om, phi, Delta, theta ) {
+          /* SOP trajectory on PM fiber:
+           * Many of these calculations are done with ev();
+           * we assume that if any of Cabs, om, etc. are changed,
+           * ev() will always be called first, so the values in
+           * tmpstore.* are updated already
+           */
+          
+          var C_re = tmpstore.C_re;
+          var C_im = tmpstore.C_im;
+          var gm   = tmpstore.gm;
+          var D    = tmpstore.D;
+          var ff   = tmpstore.ff;
+          var eps  = tmpstore.eps;
+          var eps2 = tmpstore.eps2;
+          var s10  = tmpstore.s10;
+          var s20  = tmpstore.s20;
+          var s30  = tmpstore.s30;
+
+          var X0re = tmpstore.Xre;
+          var X0im = tmpstore.Xim;
+          var Y0re = tmpstore.Yre;
+          var Y0im = tmpstore.Yim;
+          
+          var costheta = Math.cos(theta);
+          var sintheta = Math.sin(theta);
+
+          var X1re = X0re * costheta + (-X0im*s10 - Y0im*s20 + Y0re*s30) * sintheta;
+          var X1im = X0im * costheta + ( X0re*s10 + Y0re*s20 + Y0im*s30) * sintheta;
+
+          var Y1re = Y0re * costheta + ( Y0im*s10 - X0im*s20 - X0re*s30) * sintheta;
+          var Y1im = Y0im * costheta + (-Y0re*s10 + X0re*s20 - X0im*s30) * sintheta;
+          
+          var s1 = X1re*X1re + X1im*X1im - (Y1re*Y1re + Y1im*Y1im);
+          var s2 = 2 * ( X1re*Y1re + X1im*Y1im );
+          var s3 = 2 * ( X1re*Y1im - X1im*Y1re );
+          
+          return [s1, s2, s3];
+      }
 
       function drawcirc2() { // fiber
-          console.log( "fiber: ", params2 );
+          // console.log( "fiber: ", params2 );
+	  var xcabs  = params2.C * 0.01;
+	  var xomega = params2.argC * cvtfactor;
+	  var xphi   = params2.phi * cvtfactor;
+	  var xDelta = params2.delta * cvtfactor;
+	  
+	  results2.Cabs = xcabs;
+          results2.om = xomega;
+          results2.phi = xphi;
+          results2.Delta = xDelta;
+
+          var path2 = new Evpole(10.0);
+          evpolemesh.geometry.dispose();
+          evpolemesh.geometry = new THREE.TubeBufferGeometry( path2, 10, 0.2, 12, false);
+
+          var path = new Ring2(10.1);
+          ringmesh.geometry.dispose();
+          ringmesh.geometry = new THREE.TubeBufferGeometry( path, 64, 0.2, 12, true);
+          
       }
       
       function render() {
