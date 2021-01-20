@@ -1,11 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import numpy as np
 import pylab as plt
 
 def ev( dbeta, Cabs, om, phi, Delta):
     C = Cabs * np.exp( 1j* om )
     # gamma
-    gm = np.sqrt( dbeta**2 + np.abs(C)**2 )
+    # gm = np.sqrt( dbeta**2 + np.abs(C)**2 )
+    gm = np.sqrt( dbeta**2 + Cabs**2 )
     D = gm - dbeta
     
     eps = D/Cabs
@@ -38,7 +39,8 @@ def trajectory( dbeta, Cabs, om, phi, Delta, theta):
     """
     C = Cabs * np.exp( 1j* om )
     # gamma
-    gm = np.sqrt( dbeta**2 + np.abs(C)**2 )
+    # gm = np.sqrt( dbeta**2 + np.abs(C)**2 )
+    gm = np.sqrt( dbeta**2 + Cabs**2 )
     D = gm - dbeta
     
     ff = 1.0/np.sqrt( 2* gm * D )
