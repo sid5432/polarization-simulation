@@ -314,7 +314,7 @@
               return optionalTarget.set(tx,ty,tz).multiplyScalar( this.scale );
           }
       }
-      
+
       // trajectory for PM fiber
       class Ring2 extends THREE.Curve {
           constructor( scale = 10.1 ) {
@@ -387,38 +387,60 @@
           scene.add(ball);
           ball.castShadow = true;
 
-          var circgeo = new THREE.CircleGeometry( 10.01, 64 );
-          circgeo.vertices.shift(); // remove center vertex
+          /*
+           * var circgeo = new THREE.CircleGeometry( 10.01, 64 );
+           * circgeo.vertices.shift(); // remove center vertex
+           * // shift no longer works
+           */
+
           var redline = new THREE.LineDashedMaterial( { // perp to x
-              color: 0x00000,
+              color: 0x880000,
               dashSize: 0.1,
               gapSize: 0.3,
           });
           var greenline = new THREE.LineDashedMaterial( { // perp to y
-              color: 0x00000,
+              color: 0x00AA00,
               dashSize: 0.1,
               gapSize: 0.3,
           });
           var blueline = new THREE.LineBasicMaterial( { // perp to z
-              color: 0x0000ff,
+              color: 0x000088,
           });
           
-          var circ1 = new THREE.LineLoop( circgeo, greenline );
-          // circ1.rotation.x = -0.5*Math.PI;
-          circ1.rotation.x = -halfpi;
+          var radius = 10.0;
+          var points1 = [];
+          var points2 = [];
+          var points3 = [];
+          for(let i=0;i<=360;i++) {
+              var cs = radius*Math.cos(i*cvtfactor);
+              var sn = radius*Math.sin(i*cvtfactor);
+              points1.push( new THREE.Vector3(cs, sn, 0 ) );
+              points2.push( new THREE.Vector3(0, cs, sn) );
+              points3.push( new THREE.Vector3(cs, 0, sn) ) ;
+          }
+          
+          // perp to z-axis
+          var circgeo1 = new THREE.BufferGeometry().setFromPoints( points1 );
+          
+          var circ1 = new THREE.Line( circgeo1, blueline );
+          circ1.computeLineDistances();
           scene.add( circ1 );
 
-          var circ2 = new THREE.LineLoop( circgeo, blueline );
-          circ2.rotation.x = 0;
+          // perp to x-axis
+          var circgeo2 = new THREE.BufferGeometry().setFromPoints( points2 );
+          
+          var circ2 = new THREE.Line( circgeo2, redline );
           circ2.computeLineDistances();
           scene.add( circ2 );
 
-          var circ3 = new THREE.LineLoop( circgeo, redline );
-          // circ3.rotation.y = 0.5*Math.PI;
-          circ3.rotation.y = halfpi;
-          circ3.computeLineDistances();
-          scene.add( circ3 );          
+          // perp to y-axis
+          var circgeo3 = new THREE.BufferGeometry().setFromPoints( points3 );
           
+          var circ3 = new THREE.Line( circgeo3, greenline );
+          circ3.computeLineDistances();
+          scene.add( circ3 );
+
+          // .......... floor plane ........................
           var planegeo = new THREE.PlaneGeometry(35,35);
           var planemat = new THREE.MeshPhysicalMaterial({
               color: 0xffffff,
@@ -497,8 +519,8 @@
               textGeo.computeBoundingBox();
               textGeo.computeVertexNormals();
               var centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
-              
-              textGeo = new THREE.BufferGeometry().fromGeometry( textGeo );
+
+              // textGeo = new THREE.BufferGeometry().fromGeometry( textGeo );
               var textMesh1 = new THREE.Mesh( textGeo, materials );
               
               // textMesh1.rotation.y = Math.PI * 0.5;
